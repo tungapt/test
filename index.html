@@ -118,7 +118,7 @@
 </style>
 
 <body>
-  <video id="my-player" class="video-js">
+  <video id="my-player" class="video-js" playsinline>
     <source src="demo.mp4" type="video/mp4">
   </video>
   <button onclick="handleMarker()">bật marker</button>
@@ -177,7 +177,8 @@
       addQuestionToVideo(videoJs_Obj, arr) {
         var startTimer = null
         let makerVideo = new MarkerVideoJS();
-        videoJs_Obj.setAttribute('playsinline', ''); // Apple cuối cùng đã kích hoạt thuộc tính playinline trong tất cả các trình duyệt trên iOS 10, vì vậy điều này sẽ hoạt động trơn tru
+        console.log(videoJs_Obj.id_);
+        $('#my-player_html5_api').attr('playsinline'); // Apple cuối cùng đã kích hoạt thuộc tính playinline trong tất cả các trình duyệt trên iOS 10, vì vậy điều này sẽ hoạt động trơn tru
         videoJs_Obj.markers({
           markers: arr,
           onMarkerReached: function (marker, id) {
