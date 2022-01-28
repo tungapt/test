@@ -177,6 +177,7 @@
       addQuestionToVideo(videoJs_Obj, arr) {
         var startTimer = null
         let makerVideo = new MarkerVideoJS();
+        videoJs_Obj.setAttribute('playsinline', ''); // Apple cuối cùng đã kích hoạt thuộc tính playinline trong tất cả các trình duyệt trên iOS 10, vì vậy điều này sẽ hoạt động trơn tru
         videoJs_Obj.markers({
           markers: arr,
           onMarkerReached: function (marker, id) {
