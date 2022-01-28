@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://unpkg.com/video.js/dist/video-js.min.css" rel="stylesheet">
+  <link href="videojs-markers-0.7.0/dist/videojs.markers.min.css" rel="stylesheet" rel="stylesheet">
+</head>
+<style>
+  .cauHoi,.popupConfirm {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background: rgb(247, 247, 247);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 100;
+    color: #000;
+    overflow: hidden;
+  }
+  .popupConfirm{
+    background: rgba(0, 0, 0, 0.589);
+  }
+  .cauHoi p {
+    display: block;
+    width: 100%;
+    background: #2a6ab4;
+    font-size: 14px;
+    color: #fff;
+    font-weight: bold;
+    padding: 9px 0 5px 7px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .cauHoi .contentHomeWork{
+    padding:12px;
+    height: calc(85% - 28px);
+    line-height: 16px;
+    overflow: auto;
+  }
+  .cauHoi .groundControl{
+    height: 15%;
+    bottom: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+  .cauHoi .groundControl button{
+    border-bottom: 2px solid rgb(124, 124, 124);
+    border-right: 2px solid rgb(124, 124, 124);
+    padding: 8px 12px;
+    background: beige;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .cauHoi .groundControl button:nth-child(1){
+    margin-right: 12px;
+  }
+  .study {
+    background-color: #b5b5b5 !important;
+  }
+  .study::before,.mainContent::before{
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: -20px;
+    left: -3px;
+  }
+  .study::before{
+    background:no-repeat url(dinhChinh.png);
+    background-size: 15px;
+  }
+  .mainContent::before{
+    background:no-repeat url(pen.png);
+    background-size: 15px;
+  }
+  .mainContent {
+    background-color: #000 !important;
+    box-sizing: border-box;
+  }
+  .popupNotifi{
+    width: calc(100% - 24px);
+    background: rgba(0, 0, 0, 0.589);
+    color: #fff;
+    position: absolute;
+    bottom: 40px;
+    right: 10px;
+    cursor: pointer;
+    transition: all 0.4s;
+    font-size: 16px;
+    display: none;
+    line-height: 16px;
+    padding: 33px 12px 12px 12px;
+    border: 1px solid #878787;
+    border-radius: 5px;
+  }
+  .popupNotifi > p{
+    clip-path: polygon(95% 0%, 100% 50%, 95% 100%, 0% 100%, 0 51%, 0% 0%);
+    display: inline-block;
+    position: absolute;
+    top: -21px;
+    left: 0;
+    background: #2a6ab4;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 18px 12px 12px;
+    color: #ffd308;
+    margin: 0;
+}
+</style>
+
+<body>
+  <video id="my-player" class="video-js">
+    <source src="demo.mp4" type="video/mp4">
+  </video>
+  <button onclick="handleMarker()">bật marker</button>
+  <p id="resultQuiz"></p>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+  <script src='videojs-markers-0.7.0/dist/videojs-markers.js'></script>
+
+  <script>
+    var player = videojs('my-player', {
+      controls: true,
+      autoplay: false,
+      preload: 'auto',
+      width: '800px'
+    });
+    //mảng dữ liệu marker truyền vào
+    let newArr = [
+      {
+        time: 0,
+        text: "Bắt đầu",
+        status: true,
+      },
+      {
+        time: 2,
+        text: "Nội dung đính chính 1",
+        class: 'study',
+        status: false,
+      },
+      {
+        time: 3,
+        text: "\\(ax^2 + bx + c = 0\\)",
+        class: 'mainContent',
+        status: false,
+        type:'quiz'
+      },
+      {
+        time: 5,
+        text: "Nội dung đính chính 2",
+        class: 'study',
+        status: false,
+      },
+      {
+        time: 7,
+        text: "\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)",
+        class: 'mainContent',
+        status: false,
+        type:'quiz'
+      }
+    ]    
+    
+    // class gói code thêm marker vào video Js
+    // trỏ vào function addQuestionToVideo để thực hiện thêm marker vào video.
+    // đối addQuestionToVideo(tượng video js + dữ liệu marker)
+    class MarkerVideoJS{
+      // thêm các điểm marker vào trong video
+      addQuestionToVideo(videoJs_Obj, arr) {
+        var startTimer = null
+        let makerVideo = new MarkerVideoJS();
+        videoJs_Obj.markers({
+          markers: arr,
+          onMarkerReached: function (marker, id) {
+            if (marker.status != true && marker.time == Math.round(videoJs_Obj.currentTime())) {
+              $('#popupNotifi .popupNotifiContent').remove();
+              $('#popupNotifi').append(`<span class="popupNotifiContent">Bài tập: `+marker.text+`</span>`);
+              if(marker.type == 'quiz'){
+                $('#popupNotifi').addClass('handleQuiz');
+                $('#popupNotifi > p span:nth-child(1)').html('BÀI TẬP:');
+                $('#popupNotifi > p span:nth-child(2)').html('phút thứ '+marker.time)
+              }else{
+                $('#popupNotifi').removeClass('handleQuiz');
+                $('#popupNotifi > p span:nth-child(1)').html('ĐÍNH CHÍNH:');
+                $('#popupNotifi > p span:nth-child(2)').html('phút thứ '+marker.time)
+              }
+              MathJax.Hub.Queue(['Typeset', MathJax.Hub, $('#popupNotifi .popupNotifiContent')[0]]);
+              $('#popupNotifi').fadeIn();
+
+              if(startTimer != null){
+                clearTimeout(startTimer);
+              }
+              startTimer = setTimeout(function(params) {
+                $('#popupNotifi').fadeOut();           
+              }, 10000);
+            }
+          },
+          markerStyle: {
+            'width': '8px',
+            'border-radius': '0'
+          },
+          markerTip:{
+            display: false,
+          }
+        });
+        // temp study from
+        const htmlBaiTap = `<div class="cauHoi" id="cauHoi">
+          <p>bài tập</p>
+          <div class="contentHomeWork">
+            <div class="noiDung">
+              Hệ thống 10 chữ số đặc biệt số 0 mà hiện nay ta đang dùng là phát minh của \\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)
+              A.Người Ai Cập cổ đại \\(x+y=z\\) 
+              B.Người Ấn Độ cổ đại
+              C.Người Trung Quốc cổ đại 
+              D.Người Hi Lạp cổ đạiHệ thống 10 chữ số đặc biệt số 0 mà hiện nay ta đang dùng là phát minh của
+            </div>
+          </div>
+          <div class="groundControl">
+            <button onClick="makerVideo.handleControl(true)">Bỏ qua và xem tiếp</button>
+            <button onClick="makerVideo.handleControl(false)">Quay lại nội dung chính</button>    
+          </div>
+        </div>`
+        $('#' + videoJs_Obj.id_).append(htmlBaiTap);
+        // popup Confirm skip video
+        const popupConfirmSkip = `<div class="popupNotifi" id="popupNotifi" onClick="makerVideo.handleHomeWork()">
+          <p>
+            <span>ĐÍNH CHÍNH:</span>
+            <span>Phút thứ 15:30</span>
+          </p>
+          <span class="popupNotifiContent"></span>
+        </div>`
+        $('#' + videoJs_Obj.id_).append(popupConfirmSkip);
+      }
+      // handle bỏ qua xem tiếp hay quay lại nội dung chính
+      handleControl(status) {
+        $('#cauHoi').fadeOut();
+        if (status) {
+          player.play();
+          // newArr[timeHomework].status = true;
+        } else {
+          player.pause();
+          player.markers.prev();
+          player.markers.prev();
+        }
+      }
+      // handle hiện popup thông báo có bài tập
+      handleHomeWork(){
+        let element = $('#popupNotifi').hasClass('handleQuiz');
+        if(element){
+          $('#popupNotifi').fadeOut();
+          player.pause(); 
+          $('#cauHoi').fadeIn();
+        }
+      }
+      // function ẩn hiện marker
+      handleSwitchMarker(videoJs_Obj){
+        $('#'+videoJs_Obj.id_+' .vjs-marker').toggle()
+      }
+    }
+    let makerVideo = new MarkerVideoJS();
+    makerVideo.addQuestionToVideo(player, newArr);
+    function handleMarker() {
+      makerVideo.handleSwitchMarker(player);
+    }
+  </script>
+  
+  <!-- tạm thời nhún mathJax, nếu trong page có rồi thì sẽ xóa đi -->
+  <script type="text/x-mathjax-config" async>
+    MathJax.Hub.Config({
+        showMathMenu: false,
+        messageStyle: "none",
+        SVG: {
+            scale: 120,
+            linebreaks: {
+                automatic: true
+            }
+        },
+        "HTML-CSS": { linebreaks: { automatic: true } },
+        CommonHTML: { linebreaks: { automatic: true } },
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\\\(","\\\\)"], ["\\(","\\)"] ]
+        }
+    });
+  </script>
+  <script type="text/javascript" async src="https://img.loigiaihay.com/js/mathjax-2.7.0/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
+</html>
+
