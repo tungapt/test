@@ -127,6 +127,14 @@
 .btnFullVideoIos{
 	display: none;
 }
+<<<<<<< HEAD
+.fullScreenIos{
+	position: fixed;
+	transform: rotate(-90deg);
+	top: 50%;
+	left: 50%;
+	transition: all 0.4s;
+=======
 @supports (-webkit-overflow-scrolling: touch) {
 	/* CSS specific to iOS devices */ 
 	.fullScreenIos{
@@ -140,6 +148,7 @@
 		content: "\f108";
 		width: 40px;
 		height: 30px;
+		background: red;
 		position: absolute;
 		right:0;
 		top:0;
@@ -147,4 +156,37 @@
 		z-index: 10;
 		display: block;
 	}
+>>>>>>> parent of 45a5387 (playsinline)
 }
+.btnFullVideoIos{
+	content: "\f108";
+	width: 40px;
+	height: 30px;
+	position: absolute;
+	right:0;
+	top:0;
+	cursor: pointer;
+	z-index: 10;
+	display: block;
+}
+// @supports (-webkit-overflow-scrolling: touch) {
+// 	/* CSS specific to iOS devices */ 
+// 	.fullScreenIos{
+// 		position: fixed;
+// 		transform: rotate(-90deg);
+// 		top: 50%;
+// 		left: 50%;
+// 		transition: all 0.4s;
+// 	}
+// 	.btnFullVideoIos{
+// 		content: "\f108";
+// 		width: 40px;
+// 		height: 30px;
+// 		position: absolute;
+// 		right:0;
+// 		top:0;
+// 		cursor: pointer;
+// 		z-index: 10;
+// 		display: block;
+// 	}
+// }

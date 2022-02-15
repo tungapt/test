@@ -142,21 +142,41 @@ function handleMarker() {
 }
 
 let fullVideoIos = '<span id="fullVideoIos" class="btnFullVideoIos"></span>'
-$('#' + player.id_+' .vjs-control-bar').append(fullVideoIos);
+$('#' + player.id_ + ' .vjs-control-bar').append(fullVideoIos);
 
 // set fullvideo on ios device
-$('#fullVideoIos').after().on('click',function(){
-    let idPlayer = $('#my-player')
-    idPlayer.toggleClass('fullScreenIos');
-    let check = idPlayer.hasClass('fullScreenIos')
+$('#fullVideoIos').after().on('click', function () {
+    var elem = document.getElementById("my-player");
 
-    if(check){
-        let w = document.documentElement.clientWidth;
-        let h = document.documentElement.clientHeight;
-        let marginTop = h/2;
-        let marginLeft = w/2;
-        $('#my-player').css({"width": h, "height":w,'margin-left':'-'+marginTop+'px','margin-top':'-'+marginLeft+'px'});
-    }else{
-        $('#my-player').attr('style',"")
-    }  
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+    }
+
+    /* Close fullscreen */
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (document.webkitFullscreenElement ) { /* Safari */
+        document.webkitExitFullscreen();
+      } else if (document.msFullscreenElement ) { /* IE11 */
+        document.msExitFullscreen();
+      }
+    // let idPlayer = $('#my-player')
+    // idPlayer.toggleClass('fullScreenIos');
+    // let check = idPlayer.hasClass('fullScreenIos')
+
+    // if(check){
+    //     let w = document.documentElement.clientWidth;
+    //     let h = document.documentElement.clientHeight;
+    //     let marginTop = h/2;
+    //     let marginLeft = w/2;
+    //     $('#my-player').css({"width": h, "height":w,'margin-left':'-'+marginTop+'px','margin-top':'-'+marginLeft+'px'});
+    // }else{
+    //     $('#my-player').attr('style',"")
+    // }  
 })
