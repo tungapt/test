@@ -127,42 +127,36 @@
 .btnFullVideoIos{
 	display: none;
 }
-.fullScreenIos{
-	position: fixed;
-	transform: rotate(-90deg);
-	top: 50%;
-	left: 50%;
-	transition: all 0.4s;
+
+@supports (-webkit-overflow-scrolling: touch) {
+	/* CSS specific to iOS devices */ 
+	.btnFullVideoIos{
+		content: "\f108";
+		width: 40px;
+		height: 30px;
+		position: absolute;
+		right:0;
+		top:0;
+		cursor: pointer;
+		z-index: 10;
+		display: block;
+	}
+	.fullScreenIos{
+		position: fixed;
+		transform: rotate(-90deg);
+		top: 50%;
+		left: 50%;
+		transition: all 0.4s;
+	}
+	.btnFullVideoIos{
+		content: "\f108";
+		width: 40px;
+		height: 30px;
+		position: absolute;
+		right:0;
+		top:0;
+		cursor: pointer;
+		z-index: 10;
+		display: block;
+	}
 }
-.btnFullVideoIos{
-	content: "\f108";
-	width: 40px;
-	height: 30px;
-	position: absolute;
-	right:0;
-	top:0;
-	cursor: pointer;
-	z-index: 10;
-	display: block;
-}
-// @supports (-webkit-overflow-scrolling: touch) {
-// 	/* CSS specific to iOS devices */ 
-// 	.fullScreenIos{
-// 		position: fixed;
-// 		transform: rotate(-90deg);
-// 		top: 50%;
-// 		left: 50%;
-// 		transition: all 0.4s;
-// 	}
-// 	.btnFullVideoIos{
-// 		content: "\f108";
-// 		width: 40px;
-// 		height: 30px;
-// 		position: absolute;
-// 		right:0;
-// 		top:0;
-// 		cursor: pointer;
-// 		z-index: 10;
-// 		display: block;
-// 	}
-// }
